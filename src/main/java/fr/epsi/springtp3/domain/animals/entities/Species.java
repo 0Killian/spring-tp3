@@ -12,10 +12,10 @@ public class Species {
     private int id;
 
     @Column(nullable = false, length = 50)
-    private String common_name;
+    private String commonName;
 
     @Column(nullable = false)
-    private String latin_name;
+    private String latinName;
 
     @OneToMany(mappedBy = "species", cascade = CascadeType.ALL)
     private Set<Animal> animals;
