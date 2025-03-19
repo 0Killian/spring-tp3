@@ -82,6 +82,15 @@ public class SpringTp3Application implements CommandLineRunner {
         List<Person> owners = personRepository.findAllByAnimals(animal);
         System.out.println("findAllByAnimals(animal with id=1): " + owners);
 
+        // Test deleteAllWithNoAnimals
+        System.out.println("count: " + personRepository.count());
+        personRepository.deleteAllWithNoAnimals();
+        System.out.println("deleteAllWithNoAnimals(): " + personRepository.count());
+
+        // Test createMultiple
+        List<Person> persons1 = personRepository.createMultiple(10);
+        System.out.println("createMultiple(10): " + persons1);
+
         System.out.println("\n=== Testing AnimalRepository ===");
 
         // Test findAllBySpecies
@@ -96,7 +105,6 @@ public class SpringTp3Application implements CommandLineRunner {
         // Test findAllBySex
         int maleAnimals = animalRepository.findAllBySex(Animal.Sex.MALE);
         System.out.println("findAllBySex('M'): " + maleAnimals);
-
 
         // Test animalHasOwner
         boolean hasOwner = animalRepository.animalHasOwner(animal);
