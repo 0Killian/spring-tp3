@@ -22,33 +22,33 @@ public class Species {
 
     public Species() {}
 
-    public Species(String common_name, String latin_name) {
-        this.common_name = common_name;
-        this.latin_name = latin_name;
+    public Species(String commonName, String latinName) {
+        this.commonName = commonName;
+        this.latinName = latinName;
     }
 
     public String toString() {
-        return String.format("%s (%s)", common_name, latin_name);
+        return String.format("%s (%s)", commonName, latinName);
     }
 
     public int getId() {
         return id;
     }
 
-    public String getCommon_name() {
-        return common_name;
+    public String getCommonName() {
+        return commonName;
     }
 
-    public void setCommon_name(String common_name) {
-        this.common_name = common_name;
+    public void setCommonName(String commonName) {
+        this.commonName = commonName;
     }
 
-    public String getLatin_name() {
-        return latin_name;
+    public String getLatinName() {
+        return latinName;
     }
 
-    public void setLatin_name(String latin_name) {
-        this.latin_name = latin_name;
+    public void setLatinName(String latinName) {
+        this.latinName = latinName;
     }
 
     public Set<Animal> getAnimals() {
