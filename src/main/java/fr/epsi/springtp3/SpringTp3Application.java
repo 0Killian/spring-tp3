@@ -15,6 +15,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @SpringBootApplication
 public class SpringTp3Application implements CommandLineRunner {
@@ -43,51 +45,61 @@ public class SpringTp3Application implements CommandLineRunner {
 
     @Transactional
     public void run(String... args) throws Exception {
+        System.out.println("=== Testing SpeciesRepository ===");
 
-        this.speciesRepository.save(new Species("Red Fox", "Vulpes vulpes"));
-        this.animalRepository.save(new Animal("Golden", "Luna", Animal.Sex.FEMALE, this.speciesRepository.findById(2).get()));
-        Role role1 = this.roleRepository.save(new Role("ROLE_INVITE"));
-        this.personRepository.save(new Person(25, "Alex", "Carter", "alex.carter" + Math.floor(Math.random() * 1000), "P@ssw0rd123!", this.roleRepository.findById(1).get()));
+        // Test findFirstByCommonName
+        Optional<Species> species = speciesRepository.findFirstByCommonName("Chat");
+        System.out.println("findFirstByCommonName('Chat'): " + species.orElse(null));
 
-        List<Species> species = this.speciesRepository.findAll();
-        List<Animal> animals = this.animalRepository.findAll();
-        List<Role> roles = this.roleRepository.findAll();
-        List<Person> persons = this.personRepository.findAll();
+        // Test findAllByLatinNameContainsIgnoreCase
+        List<Species> speciesList = speciesRepository.findAllByLatinNameContainsIgnoreCase("familiaris");
+        System.out.println("findAllByLatinNameContainsIgnoreCase('familiaris'): " + speciesList);
 
-        Species species1 = this.speciesRepository.findById(1).get();
-        Animal animal = this.animalRepository.findById(1).get();
-        Role role = this.roleRepository.findById(1).get();
-        Person person = this.personRepository.findById(1).get();
+        // Test findAllOrderByCommonNameAsc
+        List<Species> orderedSpecies = speciesRepository.findAllOrderByCommonNameAsc();
+        System.out.println("findAllOrderByCommonNameAsc(): " + orderedSpecies);
 
-        this.speciesRepository.delete(species1);
-        this.animalRepository.delete(animal);
-        this.roleRepository.delete(role1);
-        this.personRepository.delete(person);
+        // Test findAllByCommonNameLike
+        List<Species> commonNameLike = speciesRepository.findAllByCommonNameLike("Ch%");
+        System.out.println("findAllByCommonNameLike('Ch%'): " + commonNameLike);
 
-        for (Species s : species) {
-            System.out.println(s);
-        }
+        System.out.println("\n=== Testing PersonRepository ===");
 
-        for (Animal a : animals) {
-            System.out.println(a);
-        }
+        // Test findAllByLastnameOrFirstname
+        List<Person> persons = personRepository.findAllByLastnameOrFirstname("Lamarque", "Henri");
+        System.out.println("findAllByLastnameOrFirstname('Lamarque', 'Henri'): " + persons);
 
-        for (Role r : roles) {
-            System.out.println(r);
-        }
+        // Test findAllByAgeAfter
+        List<Person> olderPersons = personRepository.findAllByAgeAfter(30);
+        System.out.println("findAllByAgeAfter(30): " + olderPersons);
 
-        for (Person p : persons) {
-            System.out.println(p);
-        }
+        // Test findAllByAgeBetween
+        List<Person> ageRangePersons = personRepository.findAllByAgeBetween(20, 30);
+        System.out.println("findAllByAgeBetween(20, 30): " + ageRangePersons);
 
-        System.out.println(species1);
-        System.out.println(animal);
-        System.out.println(role);
-        System.out.println(person);
+        // Test findAllByAnimals
+        Animal animal = animalRepository.findById(1).orElseThrow();
+        List<Person> owners = personRepository.findAllByAnimals(animal);
+        System.out.println("findAllByAnimals(animal with id=1): " + owners);
 
-        System.out.println(this.speciesRepository.count());
-        System.out.println(this.animalRepository.count());
-        System.out.println(this.roleRepository.count());
-        System.out.println(this.personRepository.count());
+        System.out.println("\n=== Testing AnimalRepository ===");
+
+        // Test findAllBySpecies
+        Species speciesChat = speciesRepository.findFirstByCommonName("Chat").orElseThrow();
+        List<Animal> animals = animalRepository.findAllBySpecies(speciesChat);
+        System.out.println("findAllBySpecies('Chat'): " + animals);
+
+        // Test findAllByColorIn
+        List<Animal> coloredAnimals = animalRepository.findAllByColorIn(List.of("Blanc", "Noir"));
+        System.out.println("findAllByColorIn(['Blanc', 'Noir']): " + coloredAnimals);
+
+        // Test findAllBySex
+        int maleAnimals = animalRepository.findAllBySex(Animal.Sex.MALE);
+        System.out.println("findAllBySex('M'): " + maleAnimals);
+
+
+        // Test animalHasOwner
+        boolean hasOwner = animalRepository.animalHasOwner(animal);
+        System.out.println("animalHasOwner(animal with id=1): " + hasOwner);
     }
 }
